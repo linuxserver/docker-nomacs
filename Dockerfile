@@ -22,8 +22,9 @@ RUN \
     https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/nomacs-logo.png && \
   echo "**** install nomacs ****" && \
   if [ -z "${NOMACS_VERSION}" ]; then \
-    NOMACS_VERSION=$(curl -sX GET https://api.github.com/repos/nomacs/nomacs/releases/latest | \
-      jq -r '.tag_name'); \
+    NOMACS_VERSION=$(curl -sX GET https://api.github.com/repos/nomacs/nomacs/releases | \
+      jq -r '.[] | select(.prerelease != true) | select(.assets.[].name | contains("x86_64.AppImage")) | select(.assets.[].name | contains("aarch64.AppImage")) | .tag_name' | \
+      sort -rV | head -1); \
   fi && \
   cd /tmp && \
   curl -fo \

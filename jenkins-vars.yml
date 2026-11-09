@@ -2,14 +2,14 @@
 
 # jenkins variables
 project_name: docker-nomacs
-external_type: github_stable
+external_type: na
+custom_version_command: "curl -sX GET https://api.github.com/repos/nomacs/nomacs/releases | jq -r '.[] | select(.prerelease != true) | select(.assets.[].name | contains(\"x86_64.AppImage\")) | select(.assets.[].name | contains(\"aarch64.AppImage\")) | .tag_name' | sort -rV | head -1"
+custom_release_notes_command: |-
+  curl -H "Authorization: token ${GITHUB_TOKEN}" -s https://api.github.com/repos/nomacs/nomacs/releases/tags/${EXT_RELEASE} | jq -r '. |.body' > releasebody.json
 release_type: stable
 release_tag: latest
 ls_branch: main
 repo_vars:
-  - EXT_GIT_BRANCH = 'master'
-  - EXT_USER = 'nomacs'
-  - EXT_REPO = 'nomacs'
   - BUILD_VERSION_ARG = 'NOMACS_VERSION'
   - LS_USER = 'linuxserver'
   - LS_REPO = 'docker-nomacs'
